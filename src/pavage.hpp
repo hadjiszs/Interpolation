@@ -1,19 +1,25 @@
-#ifndef _DETERMINANT_
-#define _DETERMINANT_
+#ifndef _PAVAGE_
+#define _PAVAGE_
 
-template<std::size_t N>
-class mat {
+#include "simplexe.hpp"
+
+template<uint8_t N, typename Corps>
+class Pavage {
+    using SimplexeNC = Simplexe<N, Corps>;
+    using PointNC    = Point<N, Corps>;
+
 private:
-  double m[N][N]; // matrice carrée de dimension N
+    SimplexeNC & _simplexe_englobant;
 
 public:
-  mat();
+    Pavage(SimplexeNC &);
 
+    void inserer(const PointNC & );
+
+    // pour debug
+    const SimplexeNC & get_simplexe_englobant() const;
 };
 
-template<std::size_t N>
-double det(mat<N> matrice);
-
-#include "determinant.tcc"
+#include "pavage.tcc"
 
 #endif

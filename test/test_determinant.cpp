@@ -1,21 +1,37 @@
 #include "interpol_catch.hpp"
-#include "determinant.hpp"
+#include "matrice.hpp"
 
 #include <iostream>
 
-TEST_CASE("Test des opérations sur les determinants", "[determinant]")
+TEST_CASE("Test des opérations sur les matrices", "[matrice]")
 {
-    SECTION("Test création determinant")
+    SECTION("Test calcul de determinant")
     {
-        Determinant<int> A;
+        Matrice<2, double> mat1(
+            {
+                { 9.0 , 3.0 },
+                { 1.0 , 6.0 }
+            });
 
-        std::cout << A.getA() << std::endl;
-        std::cout << A.getB() << std::endl;
+        REQUIRE(mat1.det() == 51);
 
-        A.swap();
-        std::cout << "swap" << std::endl;
+        Matrice<3, double> mat2(
+            {
+                { -2.0 , 2.0 , -3.0 },
+                { -1.0 , 1.0 ,  3.0 },
+                {  2.0 , 0.0 , -1.0 }
+            });
 
-        std::cout << A.getA() << std::endl;
-        std::cout << A.getB() << std::endl;
+        REQUIRE(mat2.det() == 18);
+
+        Matrice<4, double> mat3(
+            {
+                {  2.0 , 5.0 ,  3.0 , 5.0 },
+                {  4.0 , 6.0 ,  6.0 , 3.0 },
+                { 11.0 , 3.0 ,  2.0 ,-2.0 },
+                {  4.0 ,-7.0 ,  9.0 , 3.0 }
+            });
+
+        REQUIRE(mat3.det() == 2960);
     }
 }
