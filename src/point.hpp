@@ -47,7 +47,7 @@ private:
 
 public:
     Point();
-    Point(std::initializer_list<Corps> l);
+    Point(std::initializer_list<Corps> l, double val = 0.0);
 
     void   set_value(double);
     double get_value() const;

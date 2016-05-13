@@ -14,7 +14,10 @@ private:
 public:
     Pavage(SimplexeNC &);
 
-    void inserer(const PointNC & );
+    // si calculer_val est à true
+    // alors la fonction calcule la valeur barycentrique
+    // sinon elle garde la valeur du point
+    double inserer(PointNC &, bool calculer_val = true);
 
     // pour debug
     const SimplexeNC & get_simplexe_englobant() const;

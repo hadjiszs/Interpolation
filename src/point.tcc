@@ -1,11 +1,14 @@
 template<uint8_t N,
          typename Corps>
 Point<N, Corps>::Point() : _value(0)
-{ }
+{
+    for(unsigned int i(0); i < N; i++)
+        _data[i] = 0;
+}
 
 template<uint8_t N,
          typename Corps>
-Point<N, Corps>::Point(std::initializer_list<Corps> l) : _value(0)
+Point<N, Corps>::Point(std::initializer_list<Corps> l, double val) : _value(val)
 {
     std::copy(l.begin(), l.end(), _data.begin());
 }
@@ -88,7 +91,7 @@ template<uint8_t N,
 std::ostream&
 operator<<(std::ostream& flux, const Point<N, Corps> & p)
 {
-    flux << "{ ";
+    flux << "[valeur] [" << p._value << "]\n[point ] { ";
 
     for(unsigned int i = 0; i < N-1; i++)
         flux << p._data[i] << " ; ";

@@ -1,12 +1,33 @@
 template<uint8_t N,
          typename Corps>
-Simplexe<N, Corps>::Simplexe(const std::array<PointNC, N + 1> & m_list_point, double det)
+Simplexe<N, Corps>::Simplexe()
+{
+    for(unsigned int i = 0; i < N+1; i++)
+        _sub_simplexe[i] = nullptr;
+
+    _det = 0;
+}
+
+template<uint8_t N,
+         typename Corps>
+Simplexe<N, Corps>::~Simplexe()
+{
+    for(unsigned int i = 0; i < N+1; i++)
+    {
+        if(_sub_simplexe[i] != nullptr)
+            delete _sub_simplexe[i];
+    }
+}
+
+template<uint8_t N,
+         typename Corps>
+Simplexe<N, Corps>::Simplexe(const std::array<PointNC, N + 1> & m_list_point)
     : _list_point(m_list_point)
 {
     for(unsigned int i = 0; i < N+1; i++)
         _sub_simplexe[i] = nullptr;
 
-    _det = det < 0 ? -det : det;
+    update_det();
 }
 
 template<uint8_t N,
@@ -17,6 +38,25 @@ Simplexe<N, Corps>::Simplexe(std::initializer_list<PointNC> l)
 
     for(unsigned int i = 0; i < N+1; i++)
         _sub_simplexe[i] = nullptr;
+
+    update_det();
+}
+
+template<uint8_t N,
+         typename Corps>
+void
+Simplexe<N, Corps>::update_det()
+{
+    // calcul du volume
+    std::vector<PointNC> l_vec(N);
+    Matrice<N, Corps> mat;
+
+    for(unsigned int j = 1; j < N+1; j++)
+        l_vec[j-1] = _list_point[0] - _list_point[j];
+
+    mat.set(l_vec);
+    _det = mat.det();
+    _det = _det < 0 ? -_det : _det;
 }
 
 /*template<uint8_t N, typename Corps>
@@ -84,12 +124,31 @@ template<uint8_t N,
 Simplexe<N, Corps> &
 Simplexe<N, Corps>::get_sub_simplexe(const PointNC & p) const
 {
-    // TODO: est dans l'ordre croissant par aire
     for(unsigned int i = 0; i < N+1; i++)
-    {
         if(_sub_simplexe[i]->contient(p))
             return *_sub_simplexe[i];
-    }
+
+    // FIXME : generer exception
+    return *_sub_simplexe[0];
+}
+
+template<uint8_t N,
+         typename Corps>
+Simplexe<N, Corps> *
+Simplexe<N, Corps>::get_sub_simplexe(unsigned int i) const
+{
+    if(0 <= i && i <= N)
+        return _sub_simplexe[i];
+    else
+        return nullptr;
+}
+
+template<uint8_t N,
+         typename Corps>
+double
+Simplexe<N, Corps>::get_det() const
+{
+    return _det;
 }
 
 template<uint8_t N,
@@ -102,44 +161,54 @@ const std::array<Simplexe<N, Corps>*, N+1> &
 
 template<uint8_t N,
          typename Corps>
-void
-Simplexe<N, Corps>::sous_divise(const PointNC & p)
+double
+Simplexe<N, Corps>::sous_divise(PointNC & p, bool cval)
 {
+    double res = 0.0;
+    double current_coef = 1.0f;
+
     std::array<PointNC, N+1> list_point_sub_simplexe;
     std::copy(_list_point.begin(), _list_point.end(), list_point_sub_simplexe.begin());
 
-    std::vector<PointNC> l_vec(N);
-    Matrice<N, Corps> mat;
-    Corps det;
-
     for(unsigned int i = 0, k = 0; i < N+1; i++)
     {
-        std::cout << "i->[" << i << "]" << std::endl;
+        if(cval) current_coef = 1.0f/_det;
+
         list_point_sub_simplexe.at(i) = p;
 
-        // Calcul des vecteurs partant du point p
-        for(unsigned j = 1; j < N+1; j++)
-            l_vec[j-1] = list_point_sub_simplexe[0] - list_point_sub_simplexe[j];
+        // FIXME : Constructeur SimplexeNC doit être generique
+        _sub_simplexe[k] = new SimplexeNC(list_point_sub_simplexe);
 
-        mat.set(l_vec);
-
-        std::cout << mat << std::endl;
-        std::cout << "\tdeterminant : [" << (det = mat.det()) << "]" << std::endl;
-
-        //
-        // Elimination si le simplexe courant a un "volume" vide
-        //
-        if(det == 0)
+        if(_sub_simplexe[k]->_det == 0)
         {
-            std::cout << "DET 0" << std::endl;
-            list_point_sub_simplexe.at(i) = _list_point[i];
-            continue;
+            delete _sub_simplexe[k];
+            _sub_simplexe[k] = nullptr;
+        }
+        else
+        {
+            if(cval)
+            {
+                current_coef *= _sub_simplexe[k]->_det;
+                res += (current_coef * _list_point.at(i).get_value());
+            }
+
+            k++;
         }
 
-        // FIXME : Constructeur SimplexeNC doit être generique
-        _sub_simplexe[k++] = new SimplexeNC(list_point_sub_simplexe, det);
-
         list_point_sub_simplexe.at(i) = _list_point.at(i);
+    }
+
+    if(cval)
+    {
+        for(unsigned int i(0); i < N+1; i++)
+        {
+            if(_sub_simplexe[i] == nullptr)
+                break;
+
+            for(unsigned int j(0); j < N+1; j++)
+                if(_sub_simplexe[i]->_list_point[j] == p)
+                    _sub_simplexe[i]->_list_point[j].set_value(res);
+        }
     }
 
     // trie par ordre décroissant du determinant
@@ -148,6 +217,8 @@ Simplexe<N, Corps>::sous_divise(const PointNC & p)
                   if(a != nullptr && b != nullptr) return *a > *b;
                   else return false; // FIXME generer exception
               });
+
+    return res;
 }
 
 template<uint8_t N,

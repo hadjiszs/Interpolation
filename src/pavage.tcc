@@ -6,14 +6,14 @@ Pavage<N, Corps>::Pavage(SimplexeNC & m_simplexe_englobant)
 }
 
 template<uint8_t N, typename Corps>
-void
-Pavage<N, Corps>::inserer(const PointNC & p)
+double
+Pavage<N, Corps>::inserer(PointNC & p, bool calculer_val)
 {
     if( ! _simplexe_englobant.contient(p))
     {
         std::cerr << "Le point " // << p <<
                   << " n'est pas dans le simplexe englobant " << std::endl;
-        return;
+        return 0.0;
     }
 
     SimplexeNC* simplexe_courant = &_simplexe_englobant;
@@ -22,9 +22,9 @@ Pavage<N, Corps>::inserer(const PointNC & p)
     // recherche logarithmique
     while( ! simplexe_courant->est_feuille() )
         simplexe_courant = &(simplexe_courant->get_sub_simplexe(p));
-
+    
     // subdivision du simplexe_courant
-    simplexe_courant->sous_divise(p);
+    return simplexe_courant->sous_divise(p, calculer_val);
 }
 
 template<uint8_t N, typename Corps>
