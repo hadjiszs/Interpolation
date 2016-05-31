@@ -1,3 +1,7 @@
+/*
+ * \file matrice.tcc
+ * \brief Implementation de matrice.hpp
+ */
 template<uint8_t N,
          typename Corps>
 Matrice<N, Corps>::Matrice()

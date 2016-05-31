@@ -1,3 +1,7 @@
+/**
+ * \file point.hpp
+ * \brief Gère les points de l'espace
+ */
 #ifndef _POINT_
 #define _POINT_
 
@@ -35,6 +39,11 @@ std::ostream& operator<<(std::ostream &, const Point<N, Corps> &);
 // Template class Point
 //
 
+/**
+ * \brief classe template point
+ * \tparam N Dimension de la matrice
+ * \tparam Corps Corps des élements de la matrice
+ */
 template<uint8_t N,
          typename Corps>
 class Point {
@@ -47,11 +56,29 @@ private:
 
 public:
     Point();
+
+    /**
+     * \brief Constructeur par initialisation
+     * \param[in] l liste des N coordonnées du point
+     * \param[in] val valeur associée au point
+     */
     Point(std::initializer_list<Corps> l, double val = 0.0);
 
-    void   set_value(double);
+    /**
+     * \brief Setter de la valeur associé au point
+     * \param[in] val nouvelle valeur
+     */
+    void   set_value(double val);
+
+    /**
+     * \brief Getter de la valeur associé au point
+     * \param[out] valeur associée au point
+     */
     double get_value() const;
 
+    //
+    // Surcharge des operateurs
+    //
     Corps&         operator[](std::size_t);
     PointNC&       operator-=(const PointNC &);
 

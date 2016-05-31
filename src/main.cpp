@@ -13,10 +13,6 @@
 
 namespace po = boost::program_options;
 
-template class Pavage<1, double>;
-template class Pavage<2, double>;
-template class Pavage<3, double>;
-
 template<unsigned int DIM>
 void do_stuff(std::string filename)
 {
@@ -44,7 +40,6 @@ void do_stuff(std::string filename)
 
     while(getline(ifs, raw))
     {
-        // std::cout << raw << std::endl;
         std::istringstream iss(raw);
 
         Point<DIM, double> curr;

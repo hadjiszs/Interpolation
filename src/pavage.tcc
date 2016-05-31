@@ -1,3 +1,7 @@
+/**
+ * \file pavage.tcc
+ * \brief Implementation de pavage.hpp
+ */
 template<uint8_t N, typename Corps>
 Pavage<N, Corps>::Pavage(SimplexeNC & m_simplexe_englobant)
     : _simplexe_englobant(m_simplexe_englobant)
