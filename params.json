@@ -1,0 +1,6 @@
+{
+  "name": "Interpolation",
+  "tagline": "",
+  "body": "Interpolation\r\n=============\r\n\r\nPavage d'espace en simplexe\r\n\r\n### Compilation\r\n\r\n```shell\r\nmkdir build\r\ncd build\r\ncmake ..\r\nmake\r\n```\r\n\r\n### Lancement\r\n\r\n```\r\n$ ./build/src/exec -f [CHEMIN_VERS_LE_FICHIER_CSV]\r\n```\r\n\r\nExemple :\r\n\r\n```\r\n$ ./build/src/exec -f ../../data/data11.csv\r\n```\r\n",
+  "note": "Don't delete this file! It's used internally to help with page regeneration."
+}
