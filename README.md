@@ -1,7 +1,8 @@
 Interpolation
 =============
 
-Pavage d'espace en simplexe
+Fast value interpolation by space decomposition into simplexes.
+Space decomposition was done with an octree variant for simplexes
 
 ### Compilation
 
@@ -12,14 +13,14 @@ cmake ..
 make
 ```
 
-### Lancement
+### Run
 
 ```
-$ ./build/src/exec -f [CHEMIN_VERS_LE_FICHIER_CSV]
+$ ./build/src/exec -f [PATH_FILE_CSV]
 ```
 
-Exemple :
+Example :
 
 ```
-$ ./build/src/exec -f ../../data/data11.csv
+$ ./build/src/exec -f data/data11.csv
 ```
